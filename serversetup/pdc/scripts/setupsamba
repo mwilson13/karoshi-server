@@ -733,18 +733,6 @@ LDAPPATH="OU=personnel,OU=People,$LDAPBASE"
 add_organisational_unit
 creategpos
 
-NAME="staff"
-DESC="Staff"
-LDAPPATH="OU=staff,OU=personnel,OU=People,$LDAPBASE"
-add_organisational_unit
-creategpos
-
-NAME="officestaff"
-DESC="Office staff"
-LDAPPATH="OU=officestaff,OU=personnel,OU=People,$LDAPBASE"
-add_organisational_unit
-creategpos
-
 NAME="itadmin"
 DESC="Itadmin users"
 LDAPPATH="OU=itadmin,OU=personnel,OU=People,$LDAPBASE"
@@ -758,8 +746,43 @@ add_organisational_unit
 creategpos
 
 
+if [ "$INSTALL_TYPE" = business ] || [ "$INSTALL_TYPE" = joindomain_business ]
+then
+	NAME="humanresources"
+	DESC="Human Resources"
+	LDAPPATH="OU=humanresources,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+
+	NAME="marketing"
+	DESC="Marketing"
+	LDAPPATH="OU=marketing,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+
+	NAME="finance"
+	DESC="Finance"
+	LDAPPATH="OU=finance,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+	
+	NAME="researchanddevelopment"
+	DESC="Research and development"
+	LDAPPATH="OU=researchanddevelopment,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+	
+	NAME="management"
+	DESC="Management"
+	LDAPPATH="OU=management,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+
+fi
+
 if [ "$INSTALL_TYPE" = education ] || [ "$INSTALL_TYPE" = joindomain_education ]
 then
+
 	NAME="studentstaff"
 	DESC="Student staff"
 	LDAPPATH="OU=studentstaff,OU=personnel,OU=People,$LDAPBASE"
@@ -867,11 +890,6 @@ then
 
 	#Make Groups
 
-	echo -e ''$"Adding group"' staff'
-	NEWGROUP=staff
-	NEWGROUPDISP=Staff
-	add_samba4_group
-
 	echo -e ''$"Adding group"' guestusers'
 	NEWGROUP=guestusers
 	NEWGROUPDISP="Guest Users"
@@ -887,11 +905,6 @@ then
 	NEWGROUPDISP="Tech Users"
 	add_samba4_group
 
-	echo -e ''$"Adding group"' officestaff'
-	NEWGROUP=officestaff
-	NEWGROUPDISP="Office Staff"
-	add_samba4_group
-
 	echo -e ''$"Adding group"' bursar'
 	NEWGROUP=bursar
 	NEWGROUPDISP="Bursars"
@@ -905,6 +918,16 @@ then
 	#Add education groups
 	if [ "$INSTALL_TYPE" = education ] || [ "$INSTALL_TYPE" = joindomain_education ]
 	then
+		echo -e ''$"Adding group"' staff'
+		NEWGROUP=staff
+		NEWGROUPDISP=Staff
+		add_samba4_group
+		
+		echo -e ''$"Adding group"' officestaff'
+		NEWGROUP=officestaff
+		NEWGROUPDISP="Office Staff"
+		add_samba4_group
+		
 		echo -e ''$"Adding group"' nonteachingstaff'
 		NEWGROUP=nonteachingstaff
 		NEWGROUPDISP="Non teaching staff"
@@ -944,6 +967,35 @@ then
 			let COUNTER=COUNTER+1
 		done
 	fi
+	
+		if [ "$INSTALL_TYPE" = business ] || [ "$INSTALL_TYPE" = joindomain_business ]
+	then
+		echo -e ''$"Adding group"' humanresouces'
+		NEWGROUP=humanresources
+		NEWGROUPDISP="Human Resources"
+		add_samba4_group
+
+		echo -e ''$"Adding group"' marketing'
+		NEWGROUP=marketing
+		NEWGROUPDISP="Marketing"
+		add_samba4_group
+
+		echo -e ''$"Adding group"' finance'
+		NEWGROUP=finance
+		NEWGROUPDISP="Finance"
+		add_samba4_group
+		
+		echo -e ''$"Adding group"' researchanddevelopment'
+		NEWGROUP=researchanddevelopment
+		NEWGROUPDISP="Research and development"
+		add_samba4_group
+		
+		echo -e ''$"Adding group"' management'
+		NEWGROUP=management
+		NEWGROUPDISP="Management"
+		add_samba4_group
+
+	fi
 fi
 
 echo $"Creating home folders"
@@ -953,6 +1005,41 @@ chown root.root /home
 [ -d /home/users ] || mkdir /home/users
 chmod 0755 /home/users
 chown root.root /home/users
+
+#Add business home areas
+if [ "$INSTALL_TYPE" = business ] || [ "$INSTALL_TYPE" = joindomain_business ]
+then
+	#Human resources users home areas
+	[ -d /home/users/humanresources ] || mkdir /home/users/humanresources
+	chmod 0750 /home/users/humanresources
+	chown root.humanresources /home/users/humanresources
+	chown .humanresources -R /home/users/humanresources
+
+	#Marketing users home areas
+	[ -d /home/users/marketing ] || mkdir /home/users/marketing
+	chmod 0750 /home/users/marketing
+	chown root.marketing /home/users/marketing
+	chown .marketing -R /home/users/marketing
+	
+	#Finance users home areas
+	[ -d /home/users/finance ] || mkdir /home/users/finance
+	chmod 0750 /home/users/finance
+	chown root.finance /home/users/finance
+	chown .finance -R /home/users/finance
+	
+	#Research and development users home areas
+	[ -d /home/users/researchanddevelopment ] || mkdir /home/users/researchanddevelopment
+	chmod 0750 /home/users/researchanddevelopment
+	chown root.researchanddevelopment /home/users/researchanddevelopment
+	chown .researchanddevelopmentg -R /home/users/researchanddevelopment
+	
+	#Management users home areas
+	[ -d /home/users/management ] || mkdir /home/users/management
+	chmod 0750 /home/users/management
+	chown root.management /home/users/management
+	chown .management -R /home/users/management
+
+fi
 
 #Add education home areas
 if [ "$INSTALL_TYPE" = education ] || [ "$INSTALL_TYPE" = joindomain_education ]
@@ -986,6 +1073,18 @@ then
 	chmod 0750 /home/users/studentstaff
 	chown root.studentstaff /home/users/studentstaff
 	chown .studentstaff -R /home/users/studentstaff
+	
+	#Staff users home areas
+	[ -d /home/users/staff ] || mkdir /home/users/staff
+	chmod 0750 /home/users/staff
+	chown root.staff /home/users/staff
+	chown .staff -R /home/users/staff
+
+	#Office staff users home area
+	[ -d /home/users/officestaff ] || mkdir /home/users/officestaff
+	chmod 0750 /home/users/officestaff
+	chown root.officestaff /home/users/officestaff
+	chown .officestaff -R /home/users/officestaff
 
 	#Student users home areas
 	[ -d /home/users/students ] || mkdir /home/users/students
@@ -1001,17 +1100,6 @@ then
 	done
 fi
 
-#Staff users home areas
-[ -d /home/users/staff ] || mkdir /home/users/staff
-chmod 0750 /home/users/staff
-chown root.staff /home/users/staff
-chown .staff -R /home/users/staff
-
-#Office staff users home area
-[ -d /home/users/officestaff ] || mkdir /home/users/officestaff
-chmod 0750 /home/users/officestaff
-chown root.officestaff /home/users/officestaff
-chown .officestaff -R /home/users/officestaff
 #Tech staff users home area
 [ -d /home/users/techstaff ] || mkdir /home/users/techstaff
 chmod 0750 /home/users/techstaff
@@ -1057,6 +1145,7 @@ then
 	chown root.itadmin -R /home/applications
 fi
 
+
 #Subjects area
 echo `date`: "Creating subjects area" >> /opt/karoshi/serversetup/install_log
 
@@ -1064,19 +1153,19 @@ echo `date`: "Creating subjects area" >> /opt/karoshi/serversetup/install_log
 if [ "$INSTALL_TYPE" = education ] || [ "$INSTALL_TYPE" = joindomain_education ]
 then
 
-if ! test -d /home/subjects
-then
-	mkdir /home/subjects /home/subjects/"work experience" /home/subjects/art /home/subjects/"business studies" /home/subjects/careers
-	mkdir /home/subjects/childcare /home/subjects/citizenship /home/subjects/drama /home/subjects/english /home/subjects/french
-	mkdir /home/subjects/geography /home/subjects/german /home/subjects/"health and social care" /home/subjects/history
-	mkdir /home/subjects/ict /home/subjects/"leisure and tourism" /home/subjects/literacy /home/subjects/mathematics /home/subjects/"media studies"
-	mkdir /home/subjects/music /home/subjects/olc /home/subjects/"physical education" /home/subjects/science /home/subjects/spanish
-	mkdir /home/subjects/welsh /home/subjects/technology
-fi
+	if ! test -d /home/subjects
+	then
+		mkdir /home/subjects /home/subjects/"work experience" /home/subjects/art /home/subjects/"business studies" /home/subjects/careers
+		mkdir /home/subjects/childcare /home/subjects/citizenship /home/subjects/drama /home/subjects/english /home/subjects/french
+		mkdir /home/subjects/geography /home/subjects/german /home/subjects/"health and social care" /home/subjects/history
+		mkdir /home/subjects/ict /home/subjects/"leisure and tourism" /home/subjects/literacy /home/subjects/mathematics /home/subjects/"media studies"
+		mkdir /home/subjects/music /home/subjects/olc /home/subjects/"physical education" /home/subjects/science /home/subjects/spanish
+		mkdir /home/subjects/welsh /home/subjects/technology
+	fi
 
-chmod 2664 -R /home/subjects
-chmod u+X,g+X,o+X -R  /home/subjects
-chown root.itadmin -R /home/subjects
+	chmod 2664 -R /home/subjects
+	chmod u+X,g+X,o+X -R  /home/subjects
+	chown root.itadmin -R /home/subjects
 fi
 
 #Staffshare area
@@ -1132,6 +1221,7 @@ chmod 2660 -R /home/officeshare
 chmod u+X,g+X -R /home/officeshare
 chown -R root.officestaff /home/officeshare
 chown root.bursar -R /home/officeshare/bursar
+
 #Itadminshare area
 echo `date`: "Creating itadminshare area" >> /opt/karoshi/serversetup/install_log
 echo $"Creating" itadminshare
@@ -1145,6 +1235,7 @@ echo $"Creating" itadminshare
 chown root.itadmin -R /home/itadminshare
 chmod 0660 -R /home/itadminshare
 chmod u+X,g+X -R /home/itadminshare
+
 #Karoshi log area
 [ -d /var/log/karoshilogs ] || mkdir /var/log/karoshilogs
 chmod 0373 /var/log/karoshilogs
@@ -1313,6 +1404,38 @@ then
 			make_primary_group_info
 			let COUNTER=$COUNTER+1
 		done
+	fi
+	if [ $INSTALL_TYPE = business ]
+	then
+		PRIMARY_GROUP=marketing
+		SUBUNIT=personnel
+		HOMEPATH=/home/users/marketing
+		SECONDARYGROUP=""
+		make_primary_group_info
+
+		PRIMARY_GROUP=humanresources
+		SUBUNIT=personnel
+		HOMEPATH=/home/users/humanresources
+		SECONDARYGROUP=""
+		make_primary_group_info
+
+		PRIMARY_GROUP=finance
+		SUBUNIT=personnel
+		HOMEPATH=/home/users/finance
+		SECONDARYGROUP=""
+		make_primary_group_info
+
+		PRIMARY_GROUP=researchanddevelopment
+		SUBUNIT=personnel
+		HOMEPATH=/home/users/researchanddevelopment
+		SECONDARYGROUP=""
+		make_primary_group_info
+
+		PRIMARY_GROUP=management
+		SUBUNIT=personnel
+		HOMEPATH=/home/users/management
+		SECONDARYGROUP=""
+		make_primary_group_info
 	fi
 fi
 #######################
