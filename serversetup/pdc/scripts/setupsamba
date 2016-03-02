@@ -782,7 +782,18 @@ fi
 
 if [ "$INSTALL_TYPE" = education ] || [ "$INSTALL_TYPE" = joindomain_education ]
 then
+	NAME="staff"
+	DESC="Staff"
+	LDAPPATH="OU=staff,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
 
+	NAME="officestaff"
+	DESC="Office staff"
+	LDAPPATH="OU=officestaff,OU=personnel,OU=People,$LDAPBASE"
+	add_organisational_unit
+	creategpos
+	
 	NAME="studentstaff"
 	DESC="Student staff"
 	LDAPPATH="OU=studentstaff,OU=personnel,OU=People,$LDAPBASE"
